@@ -3,8 +3,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <signal.h>
+#include <sys/wait.h>
 
 using namespace std;
+
+void sigHandlerCallback(int signo)
+{
+		int status;
+		wait(&status);
+		if(WIFEXITED(status))
+		{
+			printf("The SIGCHILD has been executed!\n");
+			printf("The child process exit normally!\n");
+		}
+		
+
+}
+
 
 int main()
 
@@ -44,14 +60,21 @@ int main()
 	else
 
 	{
-
+		signal(SIGCHLD, sigHandlerCallback);
 		int fatherPid = getpid();
-		cout << "This is parent process!" << endl;
-		cout << "This parent process ID is " << fatherPid << endl;
-		cout << "The uid is " << getuid() << endl;
-		cout << "The gid is " << getgid() << endl;
 
-		cout << "num = " << num << endl;
+		while(1)
+		{
+			cout << "This is parent process!" << endl;
+			cout << "This parent process ID is " << fatherPid << endl;
+			cout << "The uid is " << getuid() << endl;
+			cout << "The gid is " << getgid() << endl;
+
+			cout << "num = " << num << endl;
+			sleep(1);
+		}
+		
+		
 
 
 	}
